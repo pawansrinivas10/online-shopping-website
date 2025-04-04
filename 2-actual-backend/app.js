@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require("path"); // CommonJS
+
+const _dirname = path.resolve();
 
 const { getStoredItems, storeItems } = require('./data/items');
 
@@ -36,6 +39,13 @@ app.post('/items', async (req, res) => {
   const updatedItems = [newItem, ...existingItems];
   await storeItems(updatedItems);
   res.status(201).json({ message: 'Stored new item.', item: newItem });
+});
+
+app.use(express.static(path.join(_dirname, "3-myntra-react-clone", "dist")));
+
+// Handle all routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(_dirname, "3-myntra-react-clone", "dist", "index.html"));
 });
 
 app.listen(8080);
